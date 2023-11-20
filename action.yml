@@ -1,0 +1,35 @@
+name: 'Application Token Generator'
+description: 'Generates an application token.'
+inputs:
+
+  github-repository:
+    description: 'Repository with the application installation.'
+    default: ${{ github.repository }}
+
+  github-token:
+    description: 'Token with metadata read access to the repository.'
+    default: ${{ github.token }}
+
+  app-pk:
+    description: 'Application private key.'
+    required: true
+
+  app-id:
+    description: 'Application identifier.'
+    required: true
+
+  duration:
+    description: 'Tokens duration, defaults to 5 minutes.'
+    required: false
+
+  permissions:
+    description: 'Permissions if you would like to scope them down.'
+    required: false
+
+outputs:
+  token:
+    description: 'Generated token.'
+
+runs:
+  using: docker
+  image: Dockerfile
