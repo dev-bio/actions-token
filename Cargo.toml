@@ -1,10 +1,10 @@
 [package]
-name = "actions-token"
+name = "actions_token"
 version = "0.1.0"
 edition = "2021"
 
 [lib]
-name = "actions-token"
+name = "actions_token"
 path = "src/lib.rs"
 
 [[bin]]
