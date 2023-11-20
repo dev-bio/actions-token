@@ -14,7 +14,9 @@ Action to generate and optionally scope down application tokens for use in workf
     permissions: | # optional settings for scoping down the token
       repositories: [ 'dev-bio/actions-token' ]
       scopes:
-        - contents: read
+        contents: write
+        metadata: read
+
 
 - name: Privileged Action
   uses: something/something@v0.0.0

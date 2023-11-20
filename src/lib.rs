@@ -1,4 +1,4 @@
-use std::collections::{HashMap};
+use std::collections::{BTreeMap};
 
 use jwt_simple::prelude::{
 
@@ -25,7 +25,8 @@ use serde::{
     Serialize,
 };
 
-#[derive(Hash, PartialEq, Eq, Clone, Debug)]
+#[derive(Clone, Debug)]
+#[derive(Hash, PartialEq, Eq)]
 #[derive(Serialize, Deserialize)]
 pub enum Privileges {
     #[serde(rename = "read")] Read,
@@ -33,8 +34,8 @@ pub enum Privileges {
     #[serde(rename = "admin")] Admin,
 }
 
-#[derive(Clone, Debug)]
-#[derive(Hash, PartialEq, Eq)]
+#[derive(Clone, Hash, Debug)]
+#[derive(PartialOrd, Ord, PartialEq, Eq)]
 #[derive(Serialize, Deserialize)]
 pub enum Scope {
     #[serde(rename = "actions")]
@@ -171,12 +172,52 @@ impl TokenOptions {
 }
 
 #[derive(Default, Clone, Debug)]
+#[derive(PartialEq, Eq)]
 #[derive(Serialize, Deserialize)]
 pub struct Permissions {
     #[serde(skip_serializing_if = "Option::is_none")]
     repositories: Option<Vec<String>>,
+    #[serde(alias = "scopes", rename = "permissions")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    scopes: Option<HashMap<Scope, Privileges>>,
+    scopes: Option<BTreeMap<Scope, Privileges>>,
+}
+
+#[cfg(test)]
+mod tests {
+
+    use std::collections::{BTreeMap};
+
+    use super::{
+
+        Permissions,
+        Privileges,
+        Scope,
+    };
+
+    #[test]
+    fn test_deserialize() {
+        let permissions = Permissions {
+            repositories: Some(vec![
+                "dev-bio/actions-token".to_owned()
+            ]),
+            scopes: Some({
+                let mut scopes = BTreeMap::new();
+                scopes.insert(Scope::Actions, Privileges::Read);
+                scopes.insert(Scope::Administration, Privileges::Write);
+                scopes
+            }),
+        };
+
+        assert_eq!(serde_yaml::to_string(&(permissions)).unwrap(), {
+            "repositories:\n- dev-bio/actions-token\npermissions:\n  actions: read\n  administration: write\n"
+        });
+
+        let expected: Permissions = serde_yaml::from_str({
+            "repositories: [ 'dev-bio/actions-token' ]\nscopes:\n  actions: read\n  administration: write\n"
+        }).unwrap();
+
+        assert_eq!(permissions, expected);
+    }
 }
 
 impl Permissions {
