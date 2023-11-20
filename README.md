@@ -1,6 +1,6 @@
 # Actions Token
 
-Action to generate and optionally scope down application tokens for use in GitHub actions.
+Action to generate and optionally scope down application tokens for use in workflows.
 
 **Example:**
 ```yaml
@@ -16,7 +16,7 @@ Action to generate and optionally scope down application tokens for use in GitHu
       scopes:
         - contents: read
 
-- name: Use Token
+- name: Privileged Action
   uses: something/something@v0.0.0
   with:
     token: ${{ steps.token.outputs.token }}

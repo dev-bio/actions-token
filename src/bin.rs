@@ -9,7 +9,7 @@ use secrecy::{
 };
 
 use actions_toolkit::{core as atc};
-use token::TokenOptions;
+use actions_token::{TokenOptions};
 
 fn main() -> Result<()> {
     let Some(repository) = atc::get_input("github-repository") else {
@@ -44,9 +44,9 @@ fn main() -> Result<()> {
     };
 
     let result = match permissions {
-        Some(permissions) => token::fetch_token(app_id, app_pk, TokenOptions::repository(repository)
+        Some(permissions) => actions_token::fetch_token(app_id, app_pk, TokenOptions::repository(repository)
             .with_duration(Duration::from_mins(duration.unwrap_or(5))).with_permissions(permissions)),
-        None => token::fetch_token(app_id, app_pk, TokenOptions::repository(repository)
+        None => actions_token::fetch_token(app_id, app_pk, TokenOptions::repository(repository)
             .with_duration(Duration::from_mins(duration.unwrap_or(5)))),
     };
     
