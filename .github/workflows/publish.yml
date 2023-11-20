@@ -52,7 +52,7 @@ jobs:
         with:
           args: cargo build --release
 
-      - name: Move Binary
+      - name: Move Binaries
         shell: bash
         run: |
 
@@ -68,6 +68,8 @@ jobs:
         with:
 
           tags: '${{ github.repository }}:latest'
+
+          context: .
           
           push: false
           load: true
@@ -120,7 +122,7 @@ jobs:
         with:
           args: cargo build --release
 
-      - name: Move Binary
+      - name: Move Binaries
         shell: bash
         run: |
 
@@ -159,6 +161,8 @@ jobs:
 
           labels: ${{ steps.metadata.outputs.labels }}
           tags: ${{ steps.metadata.outputs.tags }}
+
+          context: .
 
           push: true
 
