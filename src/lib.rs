@@ -280,9 +280,11 @@ pub fn fetch_token(app_id: Secret<String>, app_pk: Secret<String>, options: Toke
         },
         TokenKind::Repository(repository) => {
             let repository = repository.split_once('/').map(|(owner, repository)| {
-                format!("{owner}/{repository}", repository = repository.split_once('/')
+                let repository = repository.split_once('/')
                     .map(|(repository, _)| repository)
-                    .unwrap_or(repository))
+                    .unwrap_or(repository);
+
+                format!("{owner}/{repository}")
             }).unwrap_or(repository);
 
             client.get(format!("repos/{repository}/installation"))?
@@ -291,7 +293,7 @@ pub fn fetch_token(app_id: Secret<String>, app_pk: Secret<String>, options: Toke
         TokenKind::User(user) => {
             let user = user.split_once('/').map(|(user, _)| user)
                 .unwrap_or(user.as_str());
-            
+
             client.get(format!("users/{user}/installation"))?
                 .send()?.json()?
         },
