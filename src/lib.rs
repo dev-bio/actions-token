@@ -231,9 +231,16 @@ impl Permissions {
 
         let mut repositories = self.repositories.unwrap_or_default();
         repositories.extend(identifiers.as_ref().iter().map(|identifier| {
-            identifier.as_ref().split_once('/').map(|(_, repository)| repository)
-                .unwrap_or(identifier.as_ref())
-                .to_owned()
+            let tokens: Vec<_> = identifier.as_ref()
+                .split('/').collect();
+
+            match tokens.as_slice() {
+                [owner, repository] | [owner, repository, .. ] => {
+                    format!("{owner}/{repository}")
+                },
+                _ => identifier.as_ref()
+                    .to_owned(),
+            }
         }));
 
         self.repositories = Some(repositories);
@@ -272,30 +279,49 @@ pub fn fetch_token(app_id: Secret<String>, app_pk: Secret<String>, options: Toke
 
     let Installation { id } = match kind {
         TokenKind::Organization(organization) => {
-            let organization = organization.split_once('/').map(|(organization, _)| organization)
-                .unwrap_or(organization.as_str());
+            let tokens: Vec<_> = organization.split('/')
+                .collect();
 
-            client.get(format!("orgs/{organization}/installation"))?
-                .send()?.json()?
+            match tokens.as_slice() {
+                [organization] | [organization, .. ] => {
+                    client.get(format!("orgs/{organization}/installation"))?
+                        .send()?.json()?
+                },
+                _ => {
+                    client.get(format!("orgs/{organization}/installation"))?
+                        .send()?.json()?
+                },
+            }
         },
         TokenKind::Repository(repository) => {
-            let repository = repository.split_once('/').map(|(owner, repository)| {
-                let repository = repository.split_once('/')
-                    .map(|(repository, _)| repository)
-                    .unwrap_or(repository);
+            let tokens: Vec<_> = repository.split('/')
+                .collect();
 
-                format!("{owner}/{repository}")
-            }).unwrap_or(repository);
-
-            client.get(format!("repos/{repository}/installation"))?
-                .send()?.json()?
+            match tokens.as_slice() {
+                [owner, repository] | [owner, repository, .. ] => {
+                    client.get(format!("repos/{owner}/{repository}/installation"))?
+                        .send()?.json()?
+                },
+                _ => {
+                    client.get(format!("repos/{repository}/installation"))?
+                        .send()?.json()?
+                },
+            }
         },
         TokenKind::User(user) => {
-            let user = user.split_once('/').map(|(user, _)| user)
-                .unwrap_or(user.as_str());
+            let tokens: Vec<_> = user.split('/')
+                .collect();
 
-            client.get(format!("users/{user}/installation"))?
-                .send()?.json()?
+            match tokens.as_slice() {
+                [user] | [user, .. ] => {
+                    client.get(format!("users/{user}/installation"))?
+                        .send()?.json()?
+                },
+                _ => {
+                    client.get(format!("users/{user}/installation"))?
+                        .send()?.json()?
+                },
+            }
         },
     };
 
