@@ -140,7 +140,9 @@ impl TokenOptions {
             kind: TokenKind::Repository({
                 repository.to_owned()
             }),
-            permissions: None,
+            permissions: Some(Permissions::new_with_repositories([
+                repository // Default should be scoped down to the repository in question.
+            ])),
         }
     }
 
@@ -156,7 +158,38 @@ impl TokenOptions {
     }
 
     pub fn with_permissions(mut self, permissions: Permissions) -> TokenOptions {
-        self.permissions = Some(permissions);
+        self.permissions = match self.permissions  {
+            Some(Permissions { repositories: Some(mut repositories), scopes: Some(mut scopes) }) => {
+                repositories.extend(permissions.repositories.unwrap_or_default());
+                scopes.extend(permissions.scopes.unwrap_or_default());
+
+                Some(Permissions {
+                    repositories: Some(repositories),
+                    scopes: Some(scopes),
+                })
+            },
+            Some(Permissions { repositories: Some(mut repositories), scopes: None }) => {
+                repositories.extend(permissions.repositories.unwrap_or_default());
+                
+                Some(Permissions {
+                    repositories: Some(repositories),
+                    scopes: permissions.scopes,
+                })
+            },
+            Some(Permissions { repositories: None, scopes: Some(mut scopes) }) => {
+                scopes.extend(permissions.scopes.unwrap_or_default());
+
+                Some(Permissions {
+                    repositories: permissions.repositories,
+                    scopes: Some(scopes),
+                })
+            },
+            Some(Permissions { repositories: None, scopes: None }) => {
+                Some(permissions)
+            },
+            None => Some(permissions),
+        };
+
         self
     }
 }
@@ -218,9 +251,8 @@ impl Permissions {
         }
     }
 
-    pub fn new_with_repositories(repositories: impl AsRef<[String]>) -> Permissions {
-        Self::new().with_repositories(repositories)
-    }
+    pub fn new_with_repositories<R>(repositories: impl AsRef<[R]>) -> Permissions
+    where R: AsRef<str> { Self::new().with_repositories(repositories) }
 
     pub fn new_with_scopes(scopes: impl AsRef<[(Scope, Privileges)]>) -> Permissions {
         Self::new().with_scopes(scopes)
