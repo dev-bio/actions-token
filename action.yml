@@ -28,4 +28,4 @@ outputs:
 
 runs:
   using: docker
-  image: docker://ghcr.io/dev-bio/actions-token@sha256:f1358394e1a5dec61d9b4f05ec2927693ba4d06c095aedce1dbc5257a4cd4524
+  image: docker://ghcr.io/dev-bio/actions-token@sha256:924f55a246e45b637694457c1c9f674f3e298a3900ab428a3a47252330f0a985
