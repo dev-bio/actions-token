@@ -1,5 +1,10 @@
 name: 'Application Token Generator'
 description: 'Generates an application token.'
+
+branding:
+  icon: 'award'
+  color: 'green'
+  
 inputs:
 
   github-repository:
