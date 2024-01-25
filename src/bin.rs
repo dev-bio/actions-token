@@ -1,7 +1,5 @@
 use anyhow::{Result};
 
-use jwt_simple::prelude::{Duration};
-
 use secrecy::{
     
     ExposeSecret,
@@ -36,18 +34,10 @@ fn main() -> Result<()> {
             .transpose()?
     };
 
-    let duration = {
-        
-        atc::get_input("duration").map(|string| {
-            u64::from_str_radix(string.as_str(), 10)
-        }).transpose()?
-    };
-
     let result = match permissions {
         Some(permissions) => actions_token::fetch_token(app_id, app_pk, TokenOptions::repository(repository)
-            .with_duration(Duration::from_mins(duration.unwrap_or(5))).with_permissions(permissions)),
-        None => actions_token::fetch_token(app_id, app_pk, TokenOptions::repository(repository)
-            .with_duration(Duration::from_mins(duration.unwrap_or(5)))),
+            .with_permissions(permissions)),
+        None => actions_token::fetch_token(app_id, app_pk, TokenOptions::repository(repository)),
     };
     
     let Ok(token) = result else {

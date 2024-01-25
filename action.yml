@@ -18,10 +18,6 @@ inputs:
     description: 'Application identifier.'
     required: true
 
-  duration:
-    description: 'Tokens duration, defaults to 5 minutes.'
-    required: false
-
   permissions:
     description: 'Permissions if you would like to scope them down.'
     required: false

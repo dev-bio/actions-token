@@ -7,7 +7,7 @@ use jwt_simple::prelude::{
     Claims, 
 };
 
-pub use jwt_simple::prelude::{Duration as TokenDuration};
+use jwt_simple::prelude::{Duration};
 
 use actions_toolkit::client::{Client};
 
@@ -118,7 +118,6 @@ enum TokenKind {
 #[derive(Clone, Debug)]
 pub struct TokenOptions {
     pub(crate) kind: TokenKind,
-    pub(crate) duration: TokenDuration,
     pub(crate) permissions: Option<Permissions>,
 }
 
@@ -131,7 +130,6 @@ impl TokenOptions {
                 organization.to_owned()
             }),
             permissions: None,
-            duration: TokenDuration::from_mins(10),
         }
     }
 
@@ -143,7 +141,6 @@ impl TokenOptions {
                 repository.to_owned()
             }),
             permissions: None,
-            duration: TokenDuration::from_mins(10),
         }
     }
 
@@ -155,14 +152,7 @@ impl TokenOptions {
                 user.to_owned()
             }),
             permissions: None,
-            duration: TokenDuration::from_mins(10),
         }
-    }
-
-    pub fn with_duration(mut self, duration: TokenDuration) -> TokenOptions {
-        self.duration = duration;
-        
-        self
     }
 
     pub fn with_permissions(mut self, permissions: Permissions) -> TokenOptions {
@@ -265,10 +255,10 @@ impl Permissions {
 }
 
 pub fn fetch_token(app_id: Secret<String>, app_pk: Secret<String>, options: TokenOptions) -> Result<Secret<String>> {
-    let TokenOptions { kind, duration, permissions } = options;
+    let TokenOptions { kind, permissions } = options;
 
     let token = Some(RS256KeyPair::from_pem(app_pk.expose_secret())?
-        .sign(Claims::create(duration).with_issuer({
+        .sign(Claims::create(Duration::from_secs(60)).with_issuer({
             app_id.expose_secret()
         }))?);
 

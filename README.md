@@ -10,7 +10,6 @@ Action to generate and optionally scope down application tokens for use in workf
   with:
     app-id: ${{ secrets.APP_ID }}
     app-pk: ${{ secrets.APP_PK }}
-    duration: 5 # optional duration in minutes, this is the default
     permissions: | # optional settings for scoping down the token
       repositories: [ 'dev-bio/actions-token' ]
       scopes:
