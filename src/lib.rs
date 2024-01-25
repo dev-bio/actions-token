@@ -267,11 +267,11 @@ impl Permissions {
                 .split('/').collect();
 
             match tokens.as_slice() {
-                [owner, repository] | [owner, repository, .. ] => {
-                    format!("{owner}/{repository}")
+                [_, identifier] | [_, identifier, .. ] => {
+                    identifier.to_string()
                 },
                 _ => identifier.as_ref()
-                    .to_owned(),
+                    .to_string(),
             }
         }));
 
