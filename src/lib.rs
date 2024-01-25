@@ -240,9 +240,11 @@ impl Permissions {
     where R: AsRef<str> {
 
         let mut repositories = self.repositories.unwrap_or_default();
-        repositories.extend(identifiers.as_ref().iter()
-            .map(|repository| repository.as_ref()
-                .to_owned()));
+        repositories.extend(identifiers.as_ref().iter().map(|identifier| {
+            identifier.as_ref().split_once('/').map(|(_, repository)| repository)
+                .unwrap_or(identifier.as_ref())
+                .to_owned()
+        }));
 
         self.repositories = Some(repositories);
         self
