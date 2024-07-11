@@ -340,7 +340,7 @@ pub fn fetch_token(app_id: Secret<String>, app_pk: Secret<String>, options: Toke
                 },
             }
         },
-        
+
         TokenKind::User(user) => {
             let tokens: Vec<_> = user.split('/')
                 .collect();
@@ -358,6 +358,7 @@ pub fn fetch_token(app_id: Secret<String>, app_pk: Secret<String>, options: Toke
         },
     };
 
+    
     #[derive(Clone, Debug)]
     #[derive(Deserialize)]
     struct Token {
