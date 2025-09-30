@@ -12,7 +12,7 @@ name = "action"
 path = "src/bin.rs"
 
 [dependencies]
-actions-toolkit = { git = "https://github.com/dev-bio/actions-toolkit.git", rev = "1c7f267287f77dc0782d8dc8e2a55f4c6adfa748" }
+actions_toolkit = { git = "https://github.com/dev-bio/actions-toolkit.git", rev = "1c7f267287f77dc0782d8dc8e2a55f4c6adfa748" }
 anyhow = "1.0.72"
 secrecy = { version = "0.8.0", features = ["serde"] }
 jwt-simple = "0.11.6"
