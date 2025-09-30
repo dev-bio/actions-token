@@ -18,7 +18,7 @@ dependencies = [
 [[package]]
 name = "actions_toolkit"
 version = "0.1.0"
-source = "git+https://github.com/dev-bio/actions-toolkit.git?rev=1c7f267287f77dc0782d8dc8e2a55f4c6adfa748#1c7f267287f77dc0782d8dc8e2a55f4c6adfa748"
+source = "git+https://github.com/dev-bio/actions-toolkit.git?rev=9e0c6d70848a443081b6c521c8e2ae5b17b3cdd9#9e0c6d70848a443081b6c521c8e2ae5b17b3cdd9"
 dependencies = [
  "anyhow",
  "backoff",
